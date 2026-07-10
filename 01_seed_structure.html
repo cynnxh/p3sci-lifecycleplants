@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Chapter 1: Seed Structure — Sprout's Life Cycle Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --soil:#8B5E34; --soil-deep:#5C3D1F; --soil-light:#C89968;
+    --sprout:#5FC57A; --sprout-deep:#3E9E56;
+    --sun:#FFC947; --sun-deep:#F4A620; --coral:#FF6F5E; --coral-deep:#C94436;
+    --sky:#8FDCF5; --cream:#FFF9EE; --ink:#2B1B0F; --white:#FFFFFF;
+    --shadow: 0 8px 0 rgba(92,61,31,0.18);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Nunito',sans-serif; color:var(--ink); font-size:1.08rem;
+    background: linear-gradient(180deg, var(--sky) 0%, #C9EFFB 22%, #F3E6C8 48%, var(--soil-light) 62%, var(--soil) 100%);
+    min-height:100vh; padding-bottom:110px; overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Fredoka',sans-serif;}
+  a{color:inherit;}
+
+  header{text-align:center; padding:34px 20px 10px; position:relative; z-index:2;}
+  .eyebrow{display:inline-block; background:var(--white); color:var(--sprout-deep); font-weight:800; font-size:0.85rem;
+    letter-spacing:0.06em; text-transform:uppercase; padding:7px 18px; border-radius:999px; box-shadow:var(--shadow); margin-bottom:14px;}
+  h1.title{font-size:clamp(2rem,6vw,3.1rem); color:var(--white); margin:0 0 8px; text-shadow:0 4px 0 rgba(92,61,31,0.35);}
+  .subtitle{font-weight:700; color:var(--soil-deep); max-width:520px; margin:0 auto; font-size:1.12rem; background:rgba(255,255,255,0.55); border-radius:16px; padding:8px 16px;}
+
+  .stage{max-width:760px; margin:26px auto; padding:0 18px; position:relative; z-index:2;}
+  .scene{
+    background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:26px 24px;
+    display:flex; gap:20px; align-items:center; margin-bottom:22px;
+  }
+  .scene .art{flex:0 0 110px; text-align:center;}
+  .scene .art svg{width:100px;}
+  .scene .text p{margin:0; font-weight:700; font-size:1.12rem; line-height:1.55;}
+  .scene .text .say{color:var(--sprout-deep); font-family:'Fredoka'; font-size:0.9rem; text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px; display:block;}
+
+  .fact-box{
+    background:#FFF3D6; border:3px dashed var(--sun-deep); border-radius:20px; padding:18px 22px; margin:22px 0;
+    font-weight:700; font-size:1.05rem; line-height:1.6;
+  }
+  .fact-box b{color:var(--soil-deep);}
+  .fact-box .flabel{font-family:'Fredoka'; color:var(--sun-deep); display:block; margin-bottom:6px; font-size:1rem;}
+
+  .game-card{
+    background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:24px; margin:26px 0;
+  }
+  .game-card h2{margin:0 0 4px; color:var(--soil-deep); font-size:1.5rem; text-align:center;}
+  .game-card p.instr{text-align:center; font-weight:700; color:#7a6248; margin:0 0 18px; font-size:1.02rem;}
+
+  /* ---------- diagram ---------- */
+  .diagram-area{
+    position:relative; max-width:440px; margin:0 auto; background:linear-gradient(180deg,#FFF9EE 0%, #FDF0D0 100%);
+    border-radius:20px; border:3px solid #F1DDA9; padding:22px 16px;
+  }
+  .seed-svg{width:100%; height:auto; display:block; margin:0 auto;}
+  .diagram-canvas{ position:relative; width:100%; aspect-ratio: 300 / 330; }
+  .diagram-canvas .seed-svg{ position:absolute; top:0; left:0; width:100%; height:100%; }
+
+  .hotspot{ cursor:pointer; transform-box:fill-box; transform-origin:center; transition: stroke .15s, stroke-width .15s; }
+  .hotspot.active{ animation: pop-part .35s ease; }
+  @keyframes pop-part{ 0%{transform:scale(1);} 45%{transform:scale(1.045);} 100%{transform:scale(1);} }
+  .hotspot.active.hs-coat{ stroke: var(--coral); stroke-width:7; }
+  .hotspot.active.hs-leaf{ stroke: var(--coral); stroke-width:6; }
+
+  .callout{
+    margin-top:16px; background:var(--white); border:3px solid var(--sprout); border-radius:18px; padding:16px 18px;
+    display:none; box-shadow:0 4px 0 rgba(63,158,86,0.2);
+  }
+  .callout.show{ display:block; animation: pop .25s ease; }
+  @keyframes pop{ from{transform:scale(0.94); opacity:0;} to{transform:scale(1); opacity:1;} }
+  .callout .clabel{font-family:'Fredoka'; font-weight:600; color:var(--sprout-deep); font-size:1.1rem; margin-bottom:4px; display:flex; align-items:center; gap:8px;}
+  .callout .clabel .check{ display:inline-flex; width:22px; height:22px; border-radius:50%; background:var(--sprout); color:white; align-items:center; justify-content:center; font-size:0.8rem; }
+  .callout p{margin:0; font-weight:700; font-size:1.02rem; line-height:1.55;}
+
+  .tap-hint{ text-align:center; font-weight:700; color:#a9895f; font-size:0.95rem; margin-top:14px; }
+
+  /* ---------- label game: straight leader-line convention ---------- */
+  .leader-line{ stroke:#B99A6B; stroke-width:2.5; }
+  .anchor-dot{ fill:var(--coral); stroke:white; stroke-width:2; }
+
+  .label-box{
+    position:absolute; width:42%; min-height:15%; border:3px dashed #C9AE84; border-radius:12px;
+    background:rgba(255,255,255,0.85); display:flex; align-items:center; justify-content:center; padding:4px;
+    z-index:4; font-size:0.9rem;
+  }
+  .label-box.filled{ border-style:solid; border-color:var(--sprout); background:#EAF9EE; }
+
+  .label-tray{
+    display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:18px; position:relative; z-index:5;
+  }
+  .label-chip{
+    background:var(--sun); color:var(--soil-deep); font-family:'Fredoka'; font-weight:600; font-size:0.95rem;
+    padding:10px 18px; border-radius:14px; cursor:grab; box-shadow:0 4px 0 var(--sun-deep); touch-action:none;
+    user-select:none; position:relative; text-align:center;
+  }
+  .label-chip.dragging{ cursor:grabbing; opacity:0.9; z-index:50; }
+  .label-chip.placed{ background:var(--sprout); color:white; box-shadow:0 4px 0 var(--sprout-deep); cursor:default;
+    padding:8px 10px; font-size:0.9rem; }
+
+  .label-feedback{
+    text-align:center; margin-top:14px; font-weight:800; color:var(--sprout-deep); font-family:'Fredoka'; font-size:1.05rem; min-height:1.4em;
+  }
+
+  .continue-btn{
+    display:none; margin:18px auto 0; background:var(--sprout); color:white; border:none; font-family:'Fredoka';
+    font-weight:600; font-size:1.08rem; padding:13px 32px; border-radius:999px; cursor:pointer; box-shadow:0 5px 0 var(--sprout-deep);
+  }
+  .continue-btn.show{ display:block; }
+
+  .nextchap{ display:flex; justify-content:center; margin:34px 0 10px; }
+  .nextchap a{
+    background:var(--coral); color:white; font-family:'Fredoka'; font-weight:600; padding:15px 32px; border-radius:999px;
+    text-decoration:none; box-shadow:0 5px 0 var(--coral-deep); font-size:1.12rem;
+  }
+
+  nav.bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; background:var(--soil-deep); display:flex; justify-content:center; gap:6px;
+    padding:10px 8px calc(10px + env(safe-area-inset-bottom)); z-index:10; box-shadow:0 -6px 20px rgba(0,0,0,.15); flex-wrap:wrap;
+  }
+  nav.bottom-nav a{display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; color:#E3C9A0;
+    font-family:'Fredoka'; font-size:0.7rem; font-weight:600; padding:6px 10px; border-radius:14px; min-width:56px;}
+  nav.bottom-nav a .dot{font-size:1.4rem;}
+  nav.bottom-nav a.active{background:var(--sprout-deep); color:white;}
+
+  @media(max-width:560px){
+    .scene{flex-direction:column; text-align:center;}
+    body{font-size:1.05rem;}
+    .label-box{ font-size:0.82rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Chapter 1 of 4</span>
+  <h1 class="title">🌰 Meet Sprout</h1>
+  <p class="subtitle">A tiny seed is tucked into the soil. It looks plain on the outside... but something amazing is packed inside!</p>
+</header>
+
+<div class="stage">
+
+  <div class="scene">
+    <div class="art">
+      <svg viewBox="0 0 100 100">
+        <ellipse cx="50" cy="55" rx="30" ry="38" fill="#A9743F" stroke="#5C3D1F" stroke-width="4"/>
+        <path d="M50 30 Q40 45 50 60 Q60 45 50 30 Z" fill="#F4E3B2"/>
+        <circle cx="50" cy="55" r="3" fill="#5C3D1F"/>
+      </svg>
+    </div>
+    <div class="text">
+      <span class="say">Sprout says</span>
+      <p>"Hi there! I'm Sprout — well, right now I'm just a seed, resting in the soil. I might look plain, but I'm carrying everything I need to grow!"</p>
+    </div>
+  </div>
+
+  <div class="fact-box">
+    <span class="flabel">📖 What's inside a seed?</span>
+    If you cut a seed open, you'd see two important parts: a <b>seed coat</b> that protects what's inside, and a <b>seed leaf</b> that stores food for the young plant. Let's take a look inside Sprout!
+  </div>
+
+  <div class="game-card">
+    <h2>🔍 Explore: Inside a Seed</h2>
+    <p class="instr">Tap each part of the seed below to find out what it is and what it does.</p>
+
+    <div class="diagram-area">
+      <div class="diagram-canvas">
+        <svg class="seed-svg" viewBox="0 0 300 330">
+          <!-- seed coat: outer rim only, drawn via evenodd ring between outer and inner bean outlines -->
+          <path class="hotspot hs-coat" id="hs-coat" data-target="coat" fill-rule="evenodd"
+            d="M160,25 C95,18 50,60 44,130 C38,205 72,275 135,300 C178,318 218,296 222,255 C224,228 200,216 180,196 C164,180 162,158 168,136 C176,108 205,92 226,70 C240,55 228,28 160,25 Z
+               M158,42 C108,36 68,70 63,130 C58,192 88,252 138,274 C172,288 200,270 202,242 C204,222 184,212 170,196 C160,184 158,166 163,148 C169,126 192,110 208,92 C218,80 210,58 158,42 Z"
+            fill="#A9743F" stroke="#5C3D1F" stroke-width="4"/>
+
+          <!-- seed leaf: the single interior mass -->
+          <path class="hotspot hs-leaf" id="hs-leaf" data-target="leaf"
+            d="M158,42 C108,36 68,70 63,130 C58,192 88,252 138,274 C172,288 200,270 202,242 C204,222 184,212 170,196 C160,184 158,166 163,148 C169,126 192,110 208,92 C218,80 210,58 158,42 Z"
+            fill="#F0D48A" stroke="#5C3D1F" stroke-width="4"/>
+
+          <!-- embryo: decorative detail matching real seed diagrams, not a separate quiz item -->
+          <path d="M188,88 C196,72 214,66 224,74 C220,86 208,92 196,96 C192,97 189,93 188,88 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2"/>
+          <path d="M196,90 C204,80 214,76 220,78" stroke="#3E9E56" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="tap-hint" id="tapHint">👆 Tap the outer rim or the inside to begin</div>
+
+      <div class="callout" id="callout-coat">
+        <span class="clabel"><span class="check">✓</span>Seed Coat</span>
+        <p>This is the tough outer layer of the seed. It <b>protects</b> the delicate parts inside from damage, insects, and drying out.</p>
+      </div>
+      <div class="callout" id="callout-leaf">
+        <span class="clabel"><span class="check">✓</span>Seed Leaf</span>
+        <p>This stores <b>food</b> for the young plant. Before the plant has its own true leaves, the seed leaf keeps it fed and growing.</p>
+      </div>
+    </div>
+
+    <button class="continue-btn" id="exploreContinue">Got it! Let's label it ▶</button>
+  </div>
+
+  <div class="game-card" id="labelGame" style="display:none;">
+    <h2>🏷️ Label the Seed</h2>
+    <p class="instr">Just like in your workbook — drag each label onto the line pointing to the correct part.</p>
+
+    <div class="diagram-area">
+      <div class="diagram-canvas" id="labelArea">
+        <svg class="seed-svg" viewBox="0 0 300 330">
+          <path fill-rule="evenodd"
+            d="M160,25 C95,18 50,60 44,130 C38,205 72,275 135,300 C178,318 218,296 222,255 C224,228 200,216 180,196 C164,180 162,158 168,136 C176,108 205,92 226,70 C240,55 228,28 160,25 Z
+               M158,42 C108,36 68,70 63,130 C58,192 88,252 138,274 C172,288 200,270 202,242 C204,222 184,212 170,196 C160,184 158,166 163,148 C169,126 192,110 208,92 C218,80 210,58 158,42 Z"
+            fill="#A9743F" stroke="#5C3D1F" stroke-width="4"/>
+          <path d="M158,42 C108,36 68,70 63,130 C58,192 88,252 138,274 C172,288 200,270 202,242 C204,222 184,212 170,196 C160,184 158,166 163,148 C169,126 192,110 208,92 C218,80 210,58 158,42 Z"
+            fill="#F0D48A" stroke="#5C3D1F" stroke-width="4"/>
+          <path d="M188,88 C196,72 214,66 224,74 C220,86 208,92 196,96 C192,97 189,93 188,88 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2"/>
+          <path d="M196,90 C204,80 214,76 220,78" stroke="#3E9E56" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+          <!-- leader lines: straight ruled lines, matching workbook labelling convention -->
+          <line class="leader-line" x1="55" y1="110" x2="8" y2="70"/>
+          <circle class="anchor-dot" cx="55" cy="110" r="5"/>
+
+          <line class="leader-line" x1="120" y1="150" x2="80" y2="300"/>
+          <circle class="anchor-dot" cx="120" cy="150" r="5"/>
+        </svg>
+
+        <div class="label-box" id="zone-coat" data-answer="coat" style="left:0%; top:12%;"></div>
+        <div class="label-box" id="zone-leaf" data-answer="leaf" style="left:2%; top:83%;"></div>
+      </div>
+
+      <div class="label-tray" id="labelTray">
+        <div class="label-chip" id="chip-coat" data-answer="coat" draggable="false">Seed coat</div>
+        <div class="label-chip" id="chip-leaf" data-answer="leaf" draggable="false">Seed leaf</div>
+      </div>
+    </div>
+
+    <div class="label-feedback" id="labelFeedback"></div>
+    <button class="continue-btn" id="labelContinue">Great labelling! Continue ▶</button>
+  </div>
+
+</div>
+
+<div class="nextchap" id="nextChapBtn" style="display:none;">
+  <a href="02_germination.html">Continue to Chapter 2: Germination ▶</a>
+</div>
+
+<nav class="bottom-nav">
+  <a href="00_hub.html"><span class="dot">🏠</span>Home</a>
+  <a class="active" href="01_seed_structure.html"><span class="dot">🌰</span>Seed</a>
+  <a href="02_germination.html"><span class="dot">💧</span>Germinate</a>
+  <a href="03_seedling.html"><span class="dot">🌱</span>Seedling</a>
+  <a href="04_adult_recap.html"><span class="dot">🌻</span>Adult</a>
+</nav>
+
+<script>
+// ---------- explore diagram (tap hotspots) ----------
+(function(){
+  const callouts = { coat: document.getElementById('callout-coat'), leaf: document.getElementById('callout-leaf') };
+  const tapHint = document.getElementById('tapHint');
+  const exploreContinue = document.getElementById('exploreContinue');
+  const seen = new Set();
+
+  document.querySelectorAll('.hotspot').forEach(hs => {
+    hs.addEventListener('click', () => {
+      const target = hs.dataset.target;
+      document.querySelectorAll('.hotspot').forEach(h => h.classList.remove('active'));
+      document.querySelectorAll('.callout').forEach(c => c.classList.remove('show'));
+
+      hs.classList.add('active');
+      callouts[target].classList.add('show');
+
+      seen.add(target);
+      tapHint.style.display = 'none';
+
+      if(seen.size === 2){ exploreContinue.classList.add('show'); }
+    });
+  });
+
+  exploreContinue.addEventListener('click', () => {
+    document.getElementById('labelGame').style.display = 'block';
+    document.getElementById('labelGame').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+})();
+
+// ---------- label drag game ----------
+(function(){
+  const chips = document.querySelectorAll('.label-chip');
+  const zones = document.querySelectorAll('.label-box');
+  const feedback = document.getElementById('labelFeedback');
+  const labelContinue = document.getElementById('labelContinue');
+  let active = null;
+  let placedCount = 0;
+
+  chips.forEach(chip => {
+    chip.addEventListener('pointerdown', (e) => {
+      if(chip.classList.contains('placed')) return;
+      active = chip;
+      const rect = chip.getBoundingClientRect();
+      chip.dataset.offsetX = e.clientX - rect.left;
+      chip.dataset.offsetY = e.clientY - rect.top;
+      chip.style.position = 'fixed';
+      chip.style.zIndex = 50;
+      chip.style.left = rect.left + 'px';
+      chip.style.top = rect.top + 'px';
+      chip.style.width = rect.width + 'px';
+      chip.classList.add('dragging');
+    });
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if(!active) return;
+    active.style.left = (e.clientX - active.dataset.offsetX) + 'px';
+    active.style.top = (e.clientY - active.dataset.offsetY) + 'px';
+  });
+
+  window.addEventListener('pointerup', (e) => {
+    if(!active) return;
+    const chip = active;
+    active = null;
+    chip.classList.remove('dragging');
+
+    let hit = null;
+    zones.forEach(z => {
+      if(z.classList.contains('filled')) return;
+      const r = z.getBoundingClientRect();
+      if(e.clientX > r.left-16 && e.clientX < r.right+16 && e.clientY > r.top-16 && e.clientY < r.bottom+16){
+        hit = z;
+      }
+    });
+
+    if(hit && hit.dataset.answer === chip.dataset.answer){
+      hit.classList.add('filled');
+      hit.appendChild(chip);
+      chip.classList.add('placed');
+      chip.style.position = 'static';
+      chip.style.width = 'auto';
+
+      feedback.textContent = chip.dataset.answer === 'coat'
+        ? "✅ Yes! That's the seed coat — it protects the seed."
+        : "✅ Yes! That's the seed leaf — it stores food for the young plant.";
+
+      placedCount++;
+      if(placedCount === 2){
+        setTimeout(() => {
+          feedback.textContent = "🌟 Perfect! You've labelled the whole seed!";
+          labelContinue.classList.add('show');
+          document.getElementById('nextChapBtn').style.display = 'flex';
+        }, 500);
+      }
+    } else {
+      chip.style.position = 'relative';
+      chip.style.left = '';
+      chip.style.top = '';
+      chip.style.width = '';
+      chip.style.zIndex = '';
+      document.getElementById('labelTray').appendChild(chip);
+      if(hit){
+        feedback.textContent = "🤔 Not quite — try the other line!";
+      }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

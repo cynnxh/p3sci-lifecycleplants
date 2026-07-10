@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Chapter 3: Seedling — Sprout's Life Cycle Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --soil:#8B5E34; --soil-deep:#5C3D1F; --soil-light:#C89968;
+    --sprout:#5FC57A; --sprout-deep:#3E9E56;
+    --sun:#FFC947; --sun-deep:#F4A620; --coral:#FF6F5E; --coral-deep:#C94436;
+    --water:#5BC8F2; --water-deep:#2A8FC7;
+    --sky:#8FDCF5; --cream:#FFF9EE; --ink:#2B1B0F; --white:#FFFFFF;
+    --shadow: 0 8px 0 rgba(92,61,31,0.18);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Nunito',sans-serif; color:var(--ink); font-size:1.08rem;
+    background: linear-gradient(180deg, var(--sky) 0%, #C9EFFB 22%, #F3E6C8 48%, var(--soil-light) 62%, var(--soil) 100%);
+    min-height:100vh; padding-bottom:110px; overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Fredoka',sans-serif;}
+  a{color:inherit;}
+
+  header{text-align:center; padding:34px 20px 10px; position:relative; z-index:2;}
+  .eyebrow{display:inline-block; background:var(--white); color:var(--sprout-deep); font-weight:800; font-size:0.85rem;
+    letter-spacing:0.06em; text-transform:uppercase; padding:7px 18px; border-radius:999px; box-shadow:var(--shadow); margin-bottom:14px;}
+  h1.title{font-size:clamp(2rem,6vw,3.1rem); color:var(--white); margin:0 0 8px; text-shadow:0 4px 0 rgba(92,61,31,0.35);}
+  .subtitle{font-weight:700; color:var(--soil-deep); max-width:520px; margin:0 auto; font-size:1.12rem; background:rgba(255,255,255,0.55); border-radius:16px; padding:8px 16px;}
+
+  .stage{max-width:760px; margin:26px auto; padding:0 18px; position:relative; z-index:2;}
+  .scene{
+    background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:26px 24px;
+    display:flex; gap:20px; align-items:center; margin-bottom:22px;
+  }
+  .scene .art{flex:0 0 100px; text-align:center;}
+  .scene .art svg{width:90px;}
+  .scene .text p{margin:0; font-weight:700; font-size:1.12rem; line-height:1.55;}
+  .scene .text .say{color:var(--sprout-deep); font-family:'Fredoka'; font-size:0.9rem; text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px; display:block;}
+
+  .fact-box{
+    background:#FFF3D6; border:3px dashed var(--sun-deep); border-radius:20px; padding:18px 22px; margin:22px 0;
+    font-weight:700; font-size:1.05rem; line-height:1.6;
+  }
+  .fact-box b{color:var(--soil-deep);}
+  .fact-box .flabel{font-family:'Fredoka'; color:var(--sun-deep); display:block; margin-bottom:6px; font-size:1rem;}
+
+  .game-card{
+    background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:24px; margin:26px 0;
+  }
+  .game-card h2{margin:0 0 4px; color:var(--soil-deep); font-size:1.5rem; text-align:center;}
+  .game-card p.instr{text-align:center; font-weight:700; color:#7a6248; margin:0 0 14px; font-size:1.02rem;}
+
+  /* ---------- day tracker ---------- */
+  .day-tracker{ display:flex; justify-content:center; gap:8px; margin-bottom:18px; }
+  .day-dot{
+    width:14px; height:14px; border-radius:50%; background:#E3D2AC; transition: all .3s;
+  }
+  .day-dot.active{ background:var(--sprout); transform:scale(1.25); }
+  .day-dot.past{ background:var(--sprout-deep); }
+
+  .day-label{ text-align:center; font-family:'Fredoka'; font-weight:600; color:var(--soil-deep); font-size:1.15rem; margin-bottom:14px; }
+
+  /* ---------- plant stage art ---------- */
+  .plant-stage{
+    position:relative; max-width:340px; margin:0 auto; background:linear-gradient(180deg,#FFF9EE 0%, #FDF0D0 65%, #E8CE9C 100%);
+    border-radius:20px; border:3px solid #F1DDA9; padding:10px;
+  }
+  .plant-stage svg{ width:100%; height:auto; display:block; }
+  .leaf-group{ transition: opacity .9s ease, transform .9s cubic-bezier(.34,.6,.4,1); transform-box:fill-box; transform-origin:center; }
+
+  /* ---------- food meters ---------- */
+  .meters{ max-width:340px; margin:16px auto 0; }
+  .meter-row{ margin-bottom:12px; }
+  .meter-label{ font-family:'Fredoka'; font-weight:600; font-size:0.88rem; color:var(--soil-deep); display:flex; justify-content:space-between; margin-bottom:4px; }
+  .meter-track{ height:16px; background:#EFE3C7; border:2px solid #D9C48F; border-radius:10px; overflow:hidden; }
+  .meter-fill{ height:100%; border-radius:10px; transition: width 0.8s ease; }
+  .meter-fill.seedleaf{ background:linear-gradient(90deg,var(--sun-deep),var(--sun)); }
+  .meter-fill.trueleaf{ background:linear-gradient(90deg,var(--sprout-deep),var(--sprout)); }
+
+  .day-caption{
+    text-align:center; font-weight:700; font-size:1rem; line-height:1.55; margin-top:16px; min-height:3.2em;
+    background:#FFF3D6; border-radius:16px; padding:14px 18px; border:2px dashed var(--sun-deep);
+  }
+
+  .next-day-btn{
+    display:block; margin:18px auto 0; background:var(--sprout); color:white; border:none; font-family:'Fredoka';
+    font-weight:600; font-size:1.08rem; padding:13px 32px; border-radius:999px; cursor:pointer; box-shadow:0 5px 0 var(--sprout-deep);
+  }
+  .next-day-btn:disabled{ display:none; }
+
+  /* ---------- check-in ---------- */
+  .checkin{ display:none; margin-top:24px; }
+  .checkin.show{ display:block; }
+  .checkin .qtext{ font-weight:800; text-align:center; margin-bottom:14px; font-size:1.05rem; }
+  .opts{ display:grid; gap:10px; max-width:420px; margin:0 auto; }
+  .opt{
+    text-align:left; background:#F3F8FC; border:2px solid #E1EEF6; border-radius:14px; padding:12px 16px;
+    font-weight:700; font-family:'Nunito'; cursor:pointer; font-size:0.98rem; color:var(--ink);
+  }
+  .opt.correct{ background:#E3F8E9; border-color:var(--sprout); color:#217a3b; }
+  .opt.wrong{ background:#FDE7E5; border-color:var(--coral); color:#b3392c; }
+  .opt[disabled]{ cursor:default; }
+  .checkin-feedback{
+    text-align:center; margin-top:14px; font-weight:700; font-size:0.98rem; line-height:1.5; color:var(--soil-deep);
+    background:#FFF3D6; border-radius:14px; padding:12px 16px; display:none;
+  }
+  .checkin-feedback.show{ display:block; }
+
+  .continue-btn{
+    display:none; margin:18px auto 0; background:var(--sprout); color:white; border:none; font-family:'Fredoka';
+    font-weight:600; font-size:1.08rem; padding:13px 32px; border-radius:999px; cursor:pointer; box-shadow:0 5px 0 var(--sprout-deep);
+  }
+  .continue-btn.show{ display:block; }
+
+  .nextchap{ display:flex; justify-content:center; margin:34px 0 10px; }
+  .nextchap a{
+    background:var(--coral); color:white; font-family:'Fredoka'; font-weight:600; padding:15px 32px; border-radius:999px;
+    text-decoration:none; box-shadow:0 5px 0 var(--coral-deep); font-size:1.12rem;
+  }
+
+  nav.bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; background:var(--soil-deep); display:flex; justify-content:center; gap:6px;
+    padding:10px 8px calc(10px + env(safe-area-inset-bottom)); z-index:10; box-shadow:0 -6px 20px rgba(0,0,0,.15); flex-wrap:wrap;
+  }
+  nav.bottom-nav a{display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; color:#E3C9A0;
+    font-family:'Fredoka'; font-size:0.7rem; font-weight:600; padding:6px 10px; border-radius:14px; min-width:56px;}
+  nav.bottom-nav a .dot{font-size:1.4rem;}
+  nav.bottom-nav a.active{background:var(--sprout-deep); color:white;}
+
+  @media(max-width:560px){
+    .scene{flex-direction:column; text-align:center;}
+    body{font-size:1.05rem;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Chapter 3 of 4</span>
+  <h1 class="title">🌱 The Seedling</h1>
+  <p class="subtitle">Sprout has grown into a seedling! Roots reach down, a shoot reaches up — but who's feeding Sprout while it grows?</p>
+</header>
+
+<div class="stage">
+
+  <div class="scene">
+    <div class="art">
+      <svg viewBox="0 0 100 110">
+        <rect x="0" y="78" width="100" height="32" fill="#C89968"/>
+        <path d="M50,80 C48,60 50,40 52,24" stroke="#3E9E56" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="38" cy="78" rx="16" ry="10" fill="#F0D48A" stroke="#5C3D1F" stroke-width="3" transform="rotate(-25 38 78)"/>
+        <ellipse cx="62" cy="78" rx="16" ry="10" fill="#F0D48A" stroke="#5C3D1F" stroke-width="3" transform="rotate(25 62 78)"/>
+        <circle cx="34" cy="76" r="2.6" fill="#3B2612"/>
+        <circle cx="42" cy="76" r="2.6" fill="#3B2612"/>
+        <path d="M35,82 Q38,86 41,82" stroke="#3B2612" stroke-width="2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="text">
+      <span class="say">Sprout says</span>
+      <p>"Look at me now! I've got roots below and a shoot above. But I still don't have my true leaves yet — so who's giving me the energy to grow?"</p>
+    </div>
+  </div>
+
+  <div class="fact-box">
+    <span class="flabel">📖 Who feeds a seedling?</span>
+    The <b>seed leaf</b> is doing the feeding! Since Sprout doesn't have true leaves yet, it can't make its own food. The seed leaf's stored food keeps Sprout growing — until the true leaves are ready to take over.
+  </div>
+
+  <div class="game-card">
+    <h2>🎮 Watch Sprout Grow</h2>
+    <p class="instr">Tap <b>Next Day</b> and watch what happens to the seed leaf as the true leaves grow in.</p>
+
+    <div class="day-tracker" id="dayTracker">
+      <div class="day-dot active" data-day="0"></div>
+      <div class="day-dot" data-day="1"></div>
+      <div class="day-dot" data-day="2"></div>
+      <div class="day-dot" data-day="3"></div>
+    </div>
+    <div class="day-label" id="dayLabel">Day 1</div>
+
+    <div class="plant-stage">
+      <svg viewBox="0 0 220 240">
+        <rect x="0" y="185" width="220" height="55" fill="#C89968"/>
+        <!-- stem, grows taller each stage -->
+        <path id="stemPath" d="M110,190 C108,160 110,130 110,105" stroke="#3E9E56" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+        <!-- seed leaves (cotyledons) - shrink and yellow over stages -->
+        <g class="leaf-group" id="seedLeaves">
+          <ellipse cx="82" cy="185" rx="34" ry="20" fill="#F0D48A" stroke="#5C3D1F" stroke-width="3" transform="rotate(-20 82 185)"/>
+          <ellipse cx="138" cy="185" rx="34" ry="20" fill="#F0D48A" stroke="#5C3D1F" stroke-width="3" transform="rotate(20 138 185)"/>
+        </g>
+
+        <!-- true leaves - grow larger and greener over stages -->
+        <g class="leaf-group" id="trueLeaves" style="opacity:0.15; transform:scale(0.3);">
+          <path d="M110,120 C80,112 60,90 55,60 C90,64 112,84 116,116 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="3"/>
+          <path d="M110,120 C140,112 160,90 165,60 C130,64 108,84 104,116 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="3"/>
+        </g>
+
+        <!-- face, sits on the stem/seed-leaf junction throughout -->
+        <g id="faceGroup" transform="translate(110,175)">
+          <circle cx="-9" cy="-2" r="3.4" fill="#3B2612"/>
+          <circle cx="9" cy="-2" r="3.4" fill="#3B2612"/>
+          <path d="M-8,6 Q0,12 8,6" stroke="#3B2612" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="meters">
+      <div class="meter-row">
+        <div class="meter-label"><span>🌿 True leaves getting ready to make their own food</span><span id="readyPct">0%</span></div>
+        <div class="meter-track"><div class="meter-fill trueleaf" id="readyBar" style="width:0%;"></div></div>
+      </div>
+    </div>
+
+    <div class="day-caption" id="dayCaption">Sprout's seed leaf is full of stored food — it's feeding the whole plant while the true leaves are still tiny.</div>
+
+    <button class="next-day-btn" id="nextDayBtn">Next Day ▶</button>
+
+    <div class="checkin" id="checkin">
+      <p class="qtext">Why did the seed leaf disappear?</p>
+      <div class="opts" id="checkinOpts">
+        <button class="opt" data-correct="false">It got eaten by an insect.</button>
+        <button class="opt" data-correct="true">The true leaves could now make food, so the seed leaf wasn't needed anymore.</button>
+        <button class="opt" data-correct="false">It turned into a root.</button>
+      </div>
+      <div class="checkin-feedback" id="checkinFeedback"></div>
+    </div>
+
+    <button class="continue-btn" id="seedlingContinue">Continue ▶</button>
+  </div>
+
+</div>
+
+<div class="nextchap" id="nextChapBtn" style="display:none;">
+  <a href="04_adult_recap.html">Continue to Chapter 4: Adult Plant & Recap ▶</a>
+</div>
+
+<nav class="bottom-nav">
+  <a href="00_hub.html"><span class="dot">🏠</span>Home</a>
+  <a href="01_seed_structure.html"><span class="dot">🌰</span>Seed</a>
+  <a href="02_germination.html"><span class="dot">💧</span>Germinate</a>
+  <a class="active" href="03_seedling.html"><span class="dot">🌱</span>Seedling</a>
+  <a href="04_adult_recap.html"><span class="dot">🌻</span>Adult</a>
+</nav>
+
+<script>
+(function(){
+  const stages = [
+    {
+      day: 1,
+      trueleafPct: 0,
+      seedLeafTransform: 'translate(0px,0px) scale(1) rotate(0deg)', seedLeafOpacity: 1, seedLeafFill: '#F0D48A',
+      trueLeafScale: 0.3, trueLeafOpacity: 0.15,
+      stemLen: 'M110,190 C108,175 110,160 110,148',
+      caption: "Sprout's seed leaf is full of stored food — it's feeding the whole plant while the true leaves are still tiny."
+    },
+    {
+      day: 2,
+      trueleafPct: 35,
+      seedLeafTransform: 'translate(0px,-16px) scale(0.82) rotate(-5deg)', seedLeafOpacity: 0.95, seedLeafFill: '#E8C97A',
+      trueLeafScale: 0.6, trueLeafOpacity: 0.6,
+      stemLen: 'M110,190 C108,165 110,140 110,125',
+      caption: "The true leaves are growing and starting to make some of their own food. Notice the seed leaf has been lifted higher as the stem grows taller."
+    },
+    {
+      day: 3,
+      trueleafPct: 75,
+      seedLeafTransform: 'translate(2px,-30px) scale(0.5) rotate(12deg)', seedLeafOpacity: 0.85, seedLeafFill: '#C9A25C',
+      trueLeafScale: 0.85, trueLeafOpacity: 0.9,
+      stemLen: 'M110,190 C108,160 110,130 110,110',
+      caption: "The true leaves are almost fully grown now. The seed leaf has shrivelled and turned brown — its stored food is nearly all used up."
+    },
+    {
+      day: 4,
+      trueleafPct: 100,
+      seedLeafTransform: 'translate(-24px,10px) scale(0.3) rotate(65deg)', seedLeafOpacity: 0, seedLeafFill: '#A9824A',
+      trueLeafScale: 1, trueLeafOpacity: 1,
+      stemLen: 'M110,190 C108,155 110,120 110,95',
+      caption: "🍃 The seed leaf has shrivelled up and fallen off! The true leaves can now make all of Sprout's food by themselves, through photosynthesis — the seed leaf isn't needed anymore."
+    }
+  ];
+
+  let idx = 0;
+  const dots = document.querySelectorAll('.day-dot');
+  const dayLabel = document.getElementById('dayLabel');
+  const seedLeaves = document.getElementById('seedLeaves');
+  const trueLeaves = document.getElementById('trueLeaves');
+  const stemPath = document.getElementById('stemPath');
+  const faceGroup = document.getElementById('faceGroup');
+  const readyBar = document.getElementById('readyBar');
+  const readyPct = document.getElementById('readyPct');
+  const dayCaption = document.getElementById('dayCaption');
+  const nextDayBtn = document.getElementById('nextDayBtn');
+  const checkin = document.getElementById('checkin');
+
+  function render(){
+    const s = stages[idx];
+    dayLabel.textContent = 'Day ' + s.day;
+    dots.forEach((d,i) => {
+      d.classList.toggle('active', i === idx);
+      d.classList.toggle('past', i < idx);
+    });
+
+    seedLeaves.style.opacity = s.seedLeafOpacity;
+    seedLeaves.style.transform = s.seedLeafTransform;
+    seedLeaves.querySelectorAll('ellipse').forEach(el => el.setAttribute('fill', s.seedLeafFill));
+    trueLeaves.style.opacity = s.trueLeafOpacity;
+    trueLeaves.style.transform = 'scale(' + s.trueLeafScale + ')';
+    stemPath.setAttribute('d', s.stemLen);
+
+    // keep the face anchored near the top of the seed-leaf junction, rising slightly as the stem grows
+    const faceY = 175 - (idx * 14);
+    faceGroup.setAttribute('transform', 'translate(110,' + faceY + ')');
+
+    readyBar.style.width = s.trueleafPct + '%';
+    readyPct.textContent = s.trueleafPct + '%';
+
+    dayCaption.textContent = s.caption;
+
+    if(idx === stages.length - 1){
+      nextDayBtn.disabled = true;
+      setTimeout(() => { checkin.classList.add('show'); checkin.scrollIntoView({behavior:'smooth', block:'center'}); }, 900);
+    }
+  }
+
+  nextDayBtn.addEventListener('click', () => {
+    if(idx < stages.length - 1){
+      idx++;
+      render();
+    }
+  });
+
+  render();
+
+  // ---------- check-in ----------
+  const opts = document.querySelectorAll('#checkinOpts .opt');
+  const checkinFeedback = document.getElementById('checkinFeedback');
+  const seedlingContinue = document.getElementById('seedlingContinue');
+
+  opts.forEach(btn => {
+    btn.addEventListener('click', () => {
+      opts.forEach(o => o.disabled = true);
+      const correct = btn.dataset.correct === 'true';
+      if(correct){
+        btn.classList.add('correct');
+        checkinFeedback.textContent = "🌟 Exactly right! Once the true leaves can make their own food through photosynthesis, the seed leaf has done its job and falls away.";
+      } else {
+        btn.classList.add('wrong');
+        opts.forEach(o => { if(o.dataset.correct === 'true') o.classList.add('correct'); });
+        checkinFeedback.textContent = "Not quite — the seed leaf falls off because the true leaves have grown enough to make their own food. It isn't eaten or turned into anything else, it's simply no longer needed.";
+      }
+      checkinFeedback.classList.add('show');
+      seedlingContinue.classList.add('show');
+      document.getElementById('nextChapBtn').style.display = 'flex';
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

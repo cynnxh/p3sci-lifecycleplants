@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Practice at Home — Sprout's Life Cycle Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --soil:#8B5E34; --soil-deep:#5C3D1F; --soil-light:#C89968;
+    --sprout:#5FC57A; --sprout-deep:#3E9E56;
+    --sun:#FFC947; --sun-deep:#F4A620; --coral:#FF6F5E; --coral-deep:#C94436;
+    --water:#5BC8F2; --water-deep:#2A8FC7;
+    --sky:#8FDCF5; --cream:#FFF9EE; --ink:#2B1B0F; --white:#FFFFFF;
+    --shadow: 0 8px 0 rgba(92,61,31,0.18);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Nunito',sans-serif; color:var(--ink); font-size:1.06rem;
+    background: linear-gradient(180deg, var(--water) 0%, #C9EFFB 22%, #F3E6C8 48%, var(--soil-light) 62%, var(--soil) 100%);
+    min-height:100vh; padding-bottom:60px;
+  }
+  h1,h2,h3{font-family:'Fredoka',sans-serif;}
+  a{color:inherit;}
+
+  header{text-align:center; padding:34px 20px 10px;}
+  .eyebrow{display:inline-block; background:var(--white); color:var(--water-deep); font-weight:800; font-size:0.85rem;
+    letter-spacing:0.06em; text-transform:uppercase; padding:7px 18px; border-radius:999px; box-shadow:var(--shadow); margin-bottom:14px;}
+  h1.title{font-size:clamp(1.9rem,6vw,2.8rem); color:var(--white); margin:0 0 8px; text-shadow:0 4px 0 rgba(92,61,31,0.35);}
+  .subtitle{font-weight:700; color:var(--soil-deep); max-width:520px; margin:0 auto; font-size:1.08rem; background:rgba(255,255,255,0.6); border-radius:16px; padding:8px 16px;}
+
+  .home-link{ display:block; text-align:center; margin-top:14px; font-family:'Fredoka'; font-weight:600; color:var(--white); font-size:0.9rem; }
+
+  .stage{ max-width:720px; margin:24px auto; padding:0 18px; }
+
+  .today-banner{
+    background:var(--white); border-radius:22px; box-shadow:var(--shadow); padding:18px 20px; margin-bottom:26px; text-align:center;
+  }
+  .today-banner .flabel{ font-family:'Fredoka'; color:var(--water-deep); font-weight:600; font-size:0.95rem; display:block; margin-bottom:10px; }
+  .today-picks{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .pick-chip{
+    background:var(--sprout); color:white; font-family:'Fredoka'; font-weight:600; font-size:0.92rem; padding:9px 16px;
+    border-radius:999px; text-decoration:none; box-shadow:0 4px 0 var(--sprout-deep);
+  }
+
+  .game-card{ background:var(--white); border-radius:24px; box-shadow:var(--shadow); padding:22px; margin-bottom:22px; scroll-margin-top:20px; }
+  .game-card h2{ margin:0 0 4px; color:var(--soil-deep); font-size:1.3rem; text-align:center; }
+  .game-card p.instr{ text-align:center; font-weight:700; color:#7a6248; margin:0 0 16px; font-size:0.95rem; }
+
+  /* ---- flashcards ---- */
+  .flash-wrap{ max-width:320px; margin:0 auto; }
+  .flash-card{
+    background:linear-gradient(180deg,#FFF9EE,#FDF0D0); border:3px solid #F1DDA9; border-radius:20px; min-height:160px;
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; cursor:pointer; font-family:'Fredoka';
+  }
+  .flash-card .front{ font-weight:700; font-size:1.4rem; color:var(--soil-deep); }
+  .flash-card .back{ font-weight:600; font-size:1.02rem; color:var(--soil-deep); display:none; line-height:1.5; }
+  .flash-card.flipped .front{ display:none; }
+  .flash-card.flipped .back{ display:block; }
+  .flash-hint{ text-align:center; font-size:0.82rem; color:#a9895f; font-weight:700; margin-top:8px; }
+  .flash-nav{ display:flex; justify-content:center; gap:16px; margin-top:14px; }
+  .flash-nav button{
+    background:var(--sun); border:none; font-family:'Fredoka'; font-weight:600; padding:9px 18px; border-radius:999px;
+    cursor:pointer; box-shadow:0 4px 0 var(--sun-deep); color:var(--soil-deep);
+  }
+  .flash-count{ text-align:center; font-weight:700; color:#a9895f; font-size:0.85rem; margin-top:8px; }
+
+  /* ---- sort game ---- */
+  .sort-item{
+    background:#F3F8FC; border:2px solid #E1EEF6; border-radius:16px; padding:12px 14px; margin-bottom:10px;
+    display:flex; align-items:center; gap:12px; justify-content:space-between; flex-wrap:wrap;
+  }
+  .sort-item .label{ font-weight:800; display:flex; align-items:center; gap:8px; font-size:0.98rem; }
+  .sort-btns{ display:flex; gap:8px; }
+  .sort-btns button{
+    font-family:'Fredoka'; font-weight:600; font-size:0.82rem; padding:7px 13px; border-radius:999px; border:2px solid #ddd; cursor:pointer; background:white;
+  }
+  .sort-item.answered{ opacity:0.75; }
+  .sort-item.correct{ background:#E3F8E9; border-color:var(--sprout); }
+  .sort-item.incorrect{ background:#FDE7E5; border-color:var(--coral); }
+  .sort-item .fb{ width:100%; font-weight:700; font-size:0.85rem; color:var(--soil-deep); margin-top:4px; display:none; }
+  .sort-item.answered .fb{ display:block; }
+  .sort-item button[disabled]{ opacity:0.4; cursor:default; }
+
+  /* ---- sequence (reused pattern) ---- */
+  .seq-row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:14px; }
+  .seq-card{
+    position:relative; width:100px; background:linear-gradient(180deg,#FFF9EE,#FDF0D0); border:3px solid #F1DDA9;
+    border-radius:16px; padding:10px 6px 8px; text-align:center; cursor:pointer;
+  }
+  .seq-card.picked{ border-color:var(--sprout); background:linear-gradient(180deg,#EAF9EE,#D8F3DE); }
+  .seq-card .emoji{ font-size:2.1rem; }
+  .seq-card .cap{ font-family:'Fredoka'; font-weight:600; font-size:0.8rem; color:var(--soil-deep); margin-top:4px; }
+  .seq-badge{
+    position:absolute; top:-8px; right:-8px; width:26px; height:26px; border-radius:50%; background:var(--sprout);
+    color:white; font-family:'Fredoka'; font-weight:700; font-size:0.85rem; display:none; align-items:center; justify-content:center;
+    box-shadow:0 3px 0 var(--sprout-deep);
+  }
+  .seq-card.picked .seq-badge{ display:flex; }
+  .mini-feedback{ text-align:center; font-weight:700; font-family:'Fredoka'; color:var(--soil-deep); font-size:0.92rem; min-height:1.5em; margin-bottom:4px; }
+  .mini-reset{ display:block; margin:4px auto 0; background:none; border:2px solid #D9C48F; color:var(--soil-deep); font-family:'Fredoka';
+    font-weight:600; font-size:0.82rem; padding:6px 14px; border-radius:999px; cursor:pointer; }
+
+  /* ---- speed round ---- */
+  .sq{ margin-bottom:16px; }
+  .sq .qtext{ font-weight:800; margin-bottom:8px; font-size:0.96rem; }
+  .sq-opts{ display:grid; gap:7px; }
+  .sq-opt{
+    text-align:left; background:#F3F8FC; border:2px solid #E1EEF6; border-radius:12px; padding:9px 13px;
+    font-weight:700; font-family:'Nunito'; cursor:pointer; font-size:0.9rem; color:var(--ink);
+  }
+  .sq-opt.correct{ background:#E3F8E9; border-color:var(--sprout); color:#217a3b; }
+  .sq-opt.wrong{ background:#FDE7E5; border-color:var(--coral); color:#b3392c; }
+  .sq-opt[disabled]{ cursor:default; }
+  .sq-score{ text-align:center; font-family:'Fredoka'; font-weight:600; color:var(--sprout-deep); font-size:1.05rem; margin-top:8px; display:none; }
+  .sq-score.show{ display:block; }
+
+  /* ---- match game ---- */
+  .match-grid{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .match-col{ flex:1; min-width:140px; max-width:220px; }
+  .match-item{
+    background:#F3F8FC; border:2px solid #E1EEF6; border-radius:14px; padding:11px 13px; margin-bottom:9px;
+    font-weight:700; font-size:0.88rem; cursor:pointer; text-align:center;
+  }
+  .match-item.selected{ border-color:var(--sun-deep); background:#FFF3D6; }
+  .match-item.matched{ border-color:var(--sprout); background:#E3F8E9; cursor:default; color:#217a3b; }
+  .match-item.shake{ animation: shake .35s; }
+  @keyframes shake{ 25%{transform:translateX(-4px);} 75%{transform:translateX(4px);} }
+  .match-status{ text-align:center; font-weight:700; font-family:'Fredoka'; color:var(--soil-deep); font-size:0.92rem; margin-top:10px; min-height:1.5em; }
+
+  nav.bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; background:var(--soil-deep); display:flex; justify-content:center; gap:6px;
+    padding:10px 8px calc(10px + env(safe-area-inset-bottom)); z-index:10; box-shadow:0 -6px 20px rgba(0,0,0,.15); flex-wrap:wrap;
+  }
+  nav.bottom-nav a{display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; color:#E3C9A0;
+    font-family:'Fredoka'; font-size:0.68rem; font-weight:600; padding:6px 10px; border-radius:14px; min-width:52px;}
+  nav.bottom-nav a .dot{font-size:1.3rem;}
+  nav.bottom-nav a.active{background:var(--water-deep); color:white;}
+
+  @media(max-width:480px){
+    .seq-card{ width:82px; }
+    .match-col{ min-width:120px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">5–10 min · Practice at Home</span>
+  <h1 class="title">🎮 Sprout's Practice Corner</h1>
+  <p class="subtitle">Short games to keep the seed-to-plant ideas fresh between lessons.</p>
+  <a class="home-link" href="00_hub.html">← Back to all chapters</a>
+</header>
+
+<div class="stage">
+
+  <div class="today-banner">
+    <span class="flabel">🌟 Today's suggested pick</span>
+    <div class="today-picks" id="todayPicks"></div>
+  </div>
+
+  <!-- 1. FLASHCARDS -->
+  <div class="game-card" id="game-flashcards">
+    <h2>🔑 Key Words</h2>
+    <p class="instr">Tap the card to flip it. Try to say the meaning before you flip!</p>
+    <div class="flash-wrap">
+      <div class="flash-card" id="flashCard">
+        <div class="front" id="flashFront"></div>
+        <div class="back" id="flashBack"></div>
+      </div>
+      <div class="flash-hint">👆 Tap to flip</div>
+      <div class="flash-nav">
+        <button id="flashPrev">◀ Back</button>
+        <button id="flashNext">Next ▶</button>
+      </div>
+      <div class="flash-count" id="flashCount"></div>
+    </div>
+  </div>
+
+  <!-- 2. SORT GAME -->
+  <div class="game-card" id="game-sort">
+    <h2>🧺 Helps or Doesn't Help?</h2>
+    <p class="instr">Sort each item — does it help a seed germinate?</p>
+    <div id="sortList"></div>
+  </div>
+
+  <!-- 3. SEQUENCE -->
+  <div class="game-card" id="game-sequence">
+    <h2>🔢 Quick Order</h2>
+    <p class="instr">Tap the stages in the order Sprout grew.</p>
+    <div class="seq-row" id="miniSeqRow"></div>
+    <div class="mini-feedback" id="miniSeqFeedback">Tap the first stage to begin.</div>
+    <button class="mini-reset" id="miniSeqReset">🔁 Start over</button>
+  </div>
+
+  <!-- 4. SPEED ROUND -->
+  <div class="game-card" id="game-speed">
+    <h2>⚡ Speed Round</h2>
+    <p class="instr">5 quick questions — no timer, just do your best!</p>
+    <div id="speedQuestions"></div>
+    <div class="sq-score" id="speedScore"></div>
+  </div>
+
+  <!-- 5. MATCH GAME -->
+  <div class="game-card" id="game-match">
+    <h2>🔗 Match It</h2>
+    <p class="instr">Tap a part, then tap its matching job.</p>
+    <div class="match-grid">
+      <div class="match-col" id="matchLeft"></div>
+      <div class="match-col" id="matchRight"></div>
+    </div>
+    <div class="match-status" id="matchStatus"></div>
+  </div>
+
+</div>
+
+<nav class="bottom-nav">
+  <a href="00_hub.html"><span class="dot">🏠</span>Home</a>
+  <a href="01_seed_structure.html"><span class="dot">🌰</span>Seed</a>
+  <a href="02_germination.html"><span class="dot">💧</span>Germinate</a>
+  <a href="03_seedling.html"><span class="dot">🌱</span>Seedling</a>
+  <a href="04_adult_recap.html"><span class="dot">🌻</span>Adult</a>
+</nav>
+
+<script>
+/* ---------------- today's rotation (based on real calendar date, no storage needed) ---------------- */
+(function(){
+  const games = [
+    { id:'game-flashcards', label:'🔑 Key Words' },
+    { id:'game-sort', label:"🧺 Helps or Doesn't Help?" },
+    { id:'game-sequence', label:'🔢 Quick Order' },
+    { id:'game-speed', label:'⚡ Speed Round' },
+    { id:'game-match', label:'🔗 Match It' }
+  ];
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const first = dayOfYear % games.length;
+  const second = (dayOfYear + 2) % games.length;
+  const picks = [games[first], games[second]];
+  const wrap = document.getElementById('todayPicks');
+  picks.forEach(g => {
+    const a = document.createElement('a');
+    a.className = 'pick-chip';
+    a.href = '#' + g.id;
+    a.textContent = g.label;
+    wrap.appendChild(a);
+  });
+})();
+
+/* ---------------- 1. flashcards ---------------- */
+(function(){
+  const cards = [
+    { term:'Seed Coat', def:'The tough outer layer that protects the seed from damage and drying out.' },
+    { term:'Seed Leaf', def:'Stores food for the young plant until it grows true leaves of its own.' },
+    { term:'Germination', def:'The process where a seed develops into a seedling.' },
+    { term:'Seedling', def:'A young plant that has just grown roots and a shoot from a germinated seed.' }
+  ];
+  let idx = 0;
+  const card = document.getElementById('flashCard');
+  const front = document.getElementById('flashFront');
+  const back = document.getElementById('flashBack');
+  const count = document.getElementById('flashCount');
+
+  function render(){
+    front.textContent = cards[idx].term;
+    back.textContent = cards[idx].def;
+    card.classList.remove('flipped');
+    count.textContent = (idx+1) + ' / ' + cards.length;
+  }
+  card.addEventListener('click', () => card.classList.toggle('flipped'));
+  document.getElementById('flashNext').addEventListener('click', () => { idx = (idx+1) % cards.length; render(); });
+  document.getElementById('flashPrev').addEventListener('click', () => { idx = (idx-1+cards.length) % cards.length; render(); });
+  render();
+})();
+
+/* ---------------- 2. sort game ---------------- */
+(function(){
+  const items = [
+    { icon:'💧', name:'Water', helps:true, note:'Yes — water is one of the three things a seed needs to germinate.' },
+    { icon:'☀️', name:'Sun / Warmth', helps:true, note:'Yes — gentle warmth is needed for germination.' },
+    { icon:'💨', name:'Air / Oxygen', helps:true, note:'Yes — a seed needs air to germinate.' },
+    { icon:'🪴', name:'Soil / Fertiliser', helps:false, note:"No — a seed already carries its own food, so it doesn't need soil to germinate." },
+    { icon:'💡', name:'Lamp / Light', helps:false, note:'No — light is needed later, once the plant makes its own food.' },
+    { icon:'🧊', name:'Ice', helps:false, note:'No — ice is too cold. Seeds need warmth, not freezing cold.' }
+  ];
+  const list = document.getElementById('sortList');
+  items.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'sort-item';
+    row.innerHTML = `
+      <div class="label"><span>${item.icon}</span><span>${item.name}</span></div>
+      <div class="sort-btns">
+        <button data-answer="true">✅ Helps</button>
+        <button data-answer="false">❌ Doesn't help</button>
+      </div>
+      <div class="fb"></div>
+    `;
+    list.appendChild(row);
+    row.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(row.classList.contains('answered')) return;
+        const chose = btn.dataset.answer === 'true';
+        row.classList.add('answered', chose === item.helps ? 'correct' : 'incorrect');
+        row.querySelectorAll('button').forEach(b => b.disabled = true);
+        row.querySelector('.fb').textContent = item.note;
+      });
+    });
+  });
+})();
+
+/* ---------------- 3. sequence (compact) ---------------- */
+(function(){
+  const correctOrder = ['seed','seedling','adult'];
+  const stageInfo = { seed:{emoji:'🌰',cap:'Seed'}, seedling:{emoji:'🌱',cap:'Seedling'}, adult:{emoji:'🌻',cap:'Adult'} };
+  const shuffled = ['adult','seed','seedling'];
+  const row = document.getElementById('miniSeqRow');
+  const feedback = document.getElementById('miniSeqFeedback');
+  const resetBtn = document.getElementById('miniSeqReset');
+  let picks = [];
+
+  shuffled.forEach(stage => {
+    const card = document.createElement('div');
+    card.className = 'seq-card';
+    card.dataset.stage = stage;
+    card.innerHTML = `<span class="seq-badge"></span><div class="emoji">${stageInfo[stage].emoji}</div><div class="cap">${stageInfo[stage].cap}</div>`;
+    row.appendChild(card);
+  });
+
+  const cards = row.querySelectorAll('.seq-card');
+  function updateBadges(){
+    cards.forEach(c => {
+      const i = picks.indexOf(c.dataset.stage);
+      c.classList.toggle('picked', i > -1);
+      c.querySelector('.seq-badge').textContent = i > -1 ? i+1 : '';
+    });
+  }
+  function reset(){ picks = []; updateBadges(); feedback.textContent = 'Tap the first stage to begin.'; }
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const stage = card.dataset.stage;
+      if(picks.includes(stage)) return;
+      const expected = correctOrder[picks.length];
+      if(stage !== expected){ feedback.textContent = '🤔 Not that one yet — try again!'; return; }
+      picks.push(stage);
+      updateBadges();
+      feedback.textContent = picks.length < 3 ? '✅ Good! Keep going.' : '🌟 Perfect — Seed → Seedling → Adult!';
+    });
+  });
+  resetBtn.addEventListener('click', reset);
+  reset();
+})();
+
+/* ---------------- 4. speed round ---------------- */
+(function(){
+  const questions = [
+    { q:'What protects the seed?', opts:['Seed leaf','Seed coat','Root','Flower'], correct:1 },
+    { q:'What does the seed leaf store?', opts:['Water','Air','Food','Sunlight'], correct:2 },
+    { q:'Which three things does germination need?', opts:['Soil, light, ice','Water, warmth, air','Fertiliser, wind, shade','Light, soil, water'], correct:1 },
+    { q:'What grows first when a seed germinates?', opts:['Flower','Root','True leaves','Fruit'], correct:1 },
+    { q:'Why does the seed leaf fall off?', opts:['True leaves can now make their own food','It gets eaten','It turns into a root','The plant stops needing water'], correct:0 }
+  ];
+  const container = document.getElementById('speedQuestions');
+  let answered = 0, score = 0;
+
+  questions.forEach((item, qi) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'sq';
+    qDiv.innerHTML = `<div class="qtext">${qi+1}. ${item.q}</div><div class="sq-opts"></div>`;
+    const optsDiv = qDiv.querySelector('.sq-opts');
+    item.opts.forEach((optText, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'sq-opt';
+      btn.textContent = optText;
+      btn.addEventListener('click', () => {
+        if(btn.disabled) return;
+        const all = optsDiv.querySelectorAll('.sq-opt');
+        all.forEach(o => o.disabled = true);
+        if(oi === item.correct){ btn.classList.add('correct'); score++; }
+        else { btn.classList.add('wrong'); all[item.correct].classList.add('correct'); }
+        answered++;
+        if(answered === questions.length){
+          const box = document.getElementById('speedScore');
+          box.textContent = `You scored ${score} / ${questions.length}!`;
+          box.classList.add('show');
+        }
+      });
+      optsDiv.appendChild(btn);
+    });
+    container.appendChild(qDiv);
+  });
+})();
+
+/* ---------------- 5. match game ---------------- */
+(function(){
+  const pairs = [
+    { id:'coat', left:'Seed Coat', right:'Protects the seed' },
+    { id:'leaf', left:'Seed Leaf', right:'Stores food for the young plant' }
+  ];
+  const leftCol = document.getElementById('matchLeft');
+  const rightCol = document.getElementById('matchRight');
+  const status = document.getElementById('matchStatus');
+
+  const shuffledRight = [pairs[1], pairs[0]];
+
+  pairs.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'match-item';
+    el.dataset.id = p.id;
+    el.dataset.side = 'left';
+    el.textContent = p.left;
+    leftCol.appendChild(el);
+  });
+  shuffledRight.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'match-item';
+    el.dataset.id = p.id;
+    el.dataset.side = 'right';
+    el.textContent = p.right;
+    rightCol.appendChild(el);
+  });
+
+  let selectedLeft = null;
+  let matchedCount = 0;
+
+  document.querySelectorAll('.match-item').forEach(el => {
+    el.addEventListener('click', () => {
+      if(el.classList.contains('matched')) return;
+
+      if(el.dataset.side === 'left'){
+        if(selectedLeft) selectedLeft.classList.remove('selected');
+        selectedLeft = el;
+        el.classList.add('selected');
+        status.textContent = 'Now tap its matching job on the right.';
+        return;
+      }
+
+      if(!selectedLeft){ status.textContent = 'Tap a part on the left first.'; return; }
+
+      if(el.dataset.id === selectedLeft.dataset.id){
+        el.classList.add('matched');
+        selectedLeft.classList.add('matched');
+        selectedLeft.classList.remove('selected');
+        matchedCount++;
+        status.textContent = matchedCount === pairs.length ? '🌟 All matched — well done!' : '✅ Matched! Keep going.';
+        selectedLeft = null;
+      } else {
+        el.classList.add('shake');
+        setTimeout(() => el.classList.remove('shake'), 350);
+        status.textContent = '🤔 Not quite — try a different pair.';
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

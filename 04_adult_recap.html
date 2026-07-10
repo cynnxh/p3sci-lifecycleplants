@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Chapter 4: Adult Plant & Recap — Sprout's Life Cycle Adventure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --soil:#8B5E34; --soil-deep:#5C3D1F; --soil-light:#C89968;
+    --sprout:#5FC57A; --sprout-deep:#3E9E56;
+    --sun:#FFC947; --sun-deep:#F4A620; --coral:#FF6F5E; --coral-deep:#C94436;
+    --water:#5BC8F2; --water-deep:#2A8FC7;
+    --sky:#8FDCF5; --cream:#FFF9EE; --ink:#2B1B0F; --white:#FFFFFF;
+    --shadow: 0 8px 0 rgba(92,61,31,0.18);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Nunito',sans-serif; color:var(--ink); font-size:1.08rem;
+    background: linear-gradient(180deg, var(--sky) 0%, #C9EFFB 22%, #F3E6C8 48%, var(--soil-light) 62%, var(--soil) 100%);
+    min-height:100vh; padding-bottom:110px; overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Fredoka',sans-serif;}
+  a{color:inherit;}
+
+  header{text-align:center; padding:34px 20px 10px; position:relative; z-index:2;}
+  .eyebrow{display:inline-block; background:var(--white); color:var(--sun-deep); font-weight:800; font-size:0.85rem;
+    letter-spacing:0.06em; text-transform:uppercase; padding:7px 18px; border-radius:999px; box-shadow:var(--shadow); margin-bottom:14px;}
+  h1.title{font-size:clamp(2rem,6vw,3.1rem); color:var(--white); margin:0 0 8px; text-shadow:0 4px 0 rgba(92,61,31,0.35);}
+  .subtitle{font-weight:700; color:var(--soil-deep); max-width:520px; margin:0 auto; font-size:1.12rem; background:rgba(255,255,255,0.55); border-radius:16px; padding:8px 16px;}
+
+  .stage{max-width:760px; margin:26px auto; padding:0 18px; position:relative; z-index:2;}
+  .scene{
+    background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:26px 24px;
+    display:flex; gap:20px; align-items:center; margin-bottom:22px;
+  }
+  .scene .art{flex:0 0 110px; text-align:center;}
+  .scene .art svg{width:100px;}
+  .scene .text p{margin:0; font-weight:700; font-size:1.12rem; line-height:1.55;}
+  .scene .text .say{color:var(--sun-deep); font-family:'Fredoka'; font-size:0.9rem; text-transform:uppercase; letter-spacing:.03em; margin-bottom:4px; display:block;}
+
+  .fact-box{
+    background:#FFF3D6; border:3px dashed var(--sun-deep); border-radius:20px; padding:18px 22px; margin:22px 0;
+    font-weight:700; font-size:1.05rem; line-height:1.6;
+  }
+  .fact-box b{color:var(--soil-deep);}
+  .fact-box .flabel{font-family:'Fredoka'; color:var(--sun-deep); display:block; margin-bottom:6px; font-size:1rem;}
+
+  .game-card{
+    background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:24px; margin:26px 0;
+  }
+  .game-card h2{margin:0 0 4px; color:var(--soil-deep); font-size:1.5rem; text-align:center;}
+  .game-card p.instr{text-align:center; font-weight:700; color:#7a6248; margin:0 0 18px; font-size:1.02rem;}
+
+  /* ---------- sequence game ---------- */
+  .seq-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:16px; }
+  .seq-card{
+    position:relative; width:140px; background:linear-gradient(180deg,#FFF9EE 0%, #FDF0D0 100%); border:3px solid #F1DDA9;
+    border-radius:18px; padding:14px 10px 12px; text-align:center; cursor:pointer; transition: border-color .2s, transform .15s;
+  }
+  .seq-card:active{ transform:scale(0.97); }
+  .seq-card.picked{ border-color:var(--sprout); background:linear-gradient(180deg,#EAF9EE 0%, #D8F3DE 100%); }
+  .seq-card svg{ width:80px; height:auto; margin-bottom:6px; }
+  .seq-card .cap{ font-family:'Fredoka'; font-weight:600; font-size:0.92rem; color:var(--soil-deep); }
+  .seq-badge{
+    position:absolute; top:-10px; right:-10px; width:32px; height:32px; border-radius:50%; background:var(--sprout);
+    color:white; font-family:'Fredoka'; font-weight:700; font-size:1rem; display:none; align-items:center; justify-content:center;
+    box-shadow:0 3px 0 var(--sprout-deep);
+  }
+  .seq-card.picked .seq-badge{ display:flex; }
+
+  .seq-feedback{
+    text-align:center; font-weight:700; font-family:'Fredoka'; color:var(--soil-deep); font-size:1rem; min-height:1.6em; margin-bottom:6px;
+  }
+  .seq-reset{
+    display:block; margin:6px auto 0; background:none; border:2px solid #D9C48F; color:var(--soil-deep); font-family:'Fredoka';
+    font-weight:600; font-size:0.9rem; padding:8px 18px; border-radius:999px; cursor:pointer;
+  }
+
+  /* ---------- quiz ---------- */
+  .quiz-card{ background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:24px; margin:26px 0; display:none; }
+  .quiz-card.show{ display:block; }
+  .quiz-card h2{ color:var(--soil-deep); text-align:center; margin:0 0 4px; }
+  .quiz-card p.instr{ text-align:center; font-weight:700; color:#7a6248; margin:0 0 20px; font-size:1.02rem; }
+  .q{ margin-bottom:22px; }
+  .q .qtext{ font-weight:800; margin-bottom:10px; font-size:1.02rem; }
+  .opts{ display:grid; gap:9px; }
+  .opt{
+    text-align:left; background:#F3F8FC; border:2px solid #E1EEF6; border-radius:14px; padding:11px 15px;
+    font-weight:700; font-family:'Nunito'; cursor:pointer; font-size:0.96rem; color:var(--ink);
+  }
+  .opt.correct{ background:#E3F8E9; border-color:var(--sprout); color:#217a3b; }
+  .opt.wrong{ background:#FDE7E5; border-color:var(--coral); color:#b3392c; }
+  .opt[disabled]{ cursor:default; }
+  .score-box{
+    text-align:center; margin-top:10px; font-family:'Fredoka'; font-weight:600; font-size:1.2rem; color:var(--sprout-deep);
+    background:#EAF9EE; border-radius:16px; padding:16px; display:none;
+  }
+  .score-box.show{ display:block; }
+
+  .continue-btn{
+    display:none; margin:18px auto 0; background:var(--sprout); color:white; border:none; font-family:'Fredoka';
+    font-weight:600; font-size:1.08rem; padding:13px 32px; border-radius:999px; cursor:pointer; box-shadow:0 5px 0 var(--sprout-deep);
+  }
+  .continue-btn.show{ display:block; }
+
+  .finale{ display:none; text-align:center; margin:34px 0 10px; background:var(--white); border-radius:26px; box-shadow:var(--shadow); padding:30px 24px; }
+  .finale.show{ display:block; }
+  .finale svg{ width:120px; margin:0 auto 12px; }
+  .finale h3{ color:var(--sprout-deep); font-size:1.5rem; margin:0 0 8px; }
+  .finale p{ font-weight:700; color:var(--soil-deep); margin:0; }
+
+  nav.bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; background:var(--soil-deep); display:flex; justify-content:center; gap:6px;
+    padding:10px 8px calc(10px + env(safe-area-inset-bottom)); z-index:10; box-shadow:0 -6px 20px rgba(0,0,0,.15); flex-wrap:wrap;
+  }
+  nav.bottom-nav a{display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; color:#E3C9A0;
+    font-family:'Fredoka'; font-size:0.7rem; font-weight:600; padding:6px 10px; border-radius:14px; min-width:56px;}
+  nav.bottom-nav a .dot{font-size:1.4rem;}
+  nav.bottom-nav a.active{background:var(--sun-deep); color:white;}
+
+  @media(max-width:560px){
+    .scene{flex-direction:column; text-align:center;}
+    body{font-size:1.05rem;}
+    .seq-card{ width:100px; padding:10px 6px 8px; }
+    .seq-card svg{ width:62px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Chapter 4 of 4</span>
+  <h1 class="title">🌻 All Grown Up</h1>
+  <p class="subtitle">Sprout is a full-grown plant now! Let's look back at the whole journey, from tiny seed to today.</p>
+</header>
+
+<div class="stage">
+
+  <div class="scene">
+    <div class="art">
+      <svg viewBox="0 0 100 120">
+        <rect x="0" y="96" width="100" height="24" fill="#C89968"/>
+        <path d="M50,98 C48,70 50,42 50,20" stroke="#3E9E56" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M50,60 C34,56 24,44 22,30 C40,32 50,46 52,58 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="3"/>
+        <path d="M50,70 C66,66 76,54 78,40 C60,42 50,56 48,68 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="3"/>
+        <g transform="translate(50,18)">
+          <circle r="10" fill="#FFC947" stroke="#F4A620" stroke-width="2"/>
+          <circle cx="-4" cy="-2" r="1.6" fill="#3B2612"/>
+          <circle cx="4" cy="-2" r="1.6" fill="#3B2612"/>
+          <path d="M-4,3 Q0,7 4,3" stroke="#3B2612" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <g fill="#FFE082">
+            <ellipse cx="0" cy="-16" rx="4" ry="8"/>
+            <ellipse cx="0" cy="16" rx="4" ry="8"/>
+            <ellipse cx="-16" cy="0" rx="8" ry="4"/>
+            <ellipse cx="16" cy="0" rx="8" ry="4"/>
+            <ellipse cx="-11" cy="-11" rx="7" ry="4" transform="rotate(-45 -11 -11)"/>
+            <ellipse cx="11" cy="-11" rx="7" ry="4" transform="rotate(45 11 -11)"/>
+            <ellipse cx="-11" cy="11" rx="7" ry="4" transform="rotate(45 -11 11)"/>
+            <ellipse cx="11" cy="11" rx="7" ry="4" transform="rotate(-45 11 11)"/>
+          </g>
+          <circle r="9" fill="#FFC947" stroke="#F4A620" stroke-width="2"/>
+          <circle cx="-4" cy="-2" r="1.6" fill="#3B2612"/>
+          <circle cx="4" cy="-2" r="1.6" fill="#3B2612"/>
+          <path d="M-4,3 Q0,7 4,3" stroke="#3B2612" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+    <div class="text">
+      <span class="say">Sprout says</span>
+      <p>"Can you believe it? I started as a tiny seed buried in the soil — and now look at me! I have leaves, flowers, and I can make my own food."</p>
+    </div>
+  </div>
+
+  <div class="fact-box">
+    <span class="flabel">📖 The whole journey</span>
+    A flowering plant grows through three main stages: <b>seed</b> → <b>seedling</b> → <b>adult plant</b>. Let's put Sprout's journey back in the right order!
+  </div>
+
+  <div class="game-card">
+    <h2>🔢 Put the Stages in Order</h2>
+    <p class="instr">Tap the cards in the order Sprout grew — from first to last.</p>
+
+    <div class="seq-row" id="seqRow">
+      <div class="seq-card" data-stage="adult">
+        <span class="seq-badge"></span>
+        <svg viewBox="0 0 100 110"><rect x="0" y="90" width="100" height="20" fill="#C89968"/>
+          <path d="M50,90 C48,65 50,40 50,18" stroke="#3E9E56" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M50,55 C36,52 27,42 25,30 C40,32 49,44 51,54 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2.5"/>
+          <path d="M50,64 C64,61 73,51 75,39 C60,41 51,53 49,63 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2.5"/>
+          <circle cx="50" cy="16" r="9" fill="#FFC947" stroke="#F4A620" stroke-width="2"/>
+        </svg>
+        <div class="cap">Adult Plant</div>
+      </div>
+
+      <div class="seq-card" data-stage="seed">
+        <span class="seq-badge"></span>
+        <svg viewBox="0 0 100 110">
+          <path fill-rule="evenodd"
+            d="M60,15 C35,10 15,28 13,55 C11,80 24,102 47,108 C60,111 72,102 73,89 C73,80 66,76 60,71 C55,66 54,58 56,50 C59,40 68,34 74,26 C78,21 74,14 60,15 Z
+               M59,21 C42,19 26,32 24,54 C22,76 33,96 49,100 C58,98 65,91 66,82 C66,76 60,73 56,68 C52,63 52,55 54,48 C56,40 62,35 67,29 C71,25 68,23 59,21 Z"
+            fill="#A9743F" stroke="#5C3D1F" stroke-width="3"/>
+          <path d="M59,21 C42,19 26,32 24,54 C22,76 33,96 49,100 C58,98 65,91 66,82 C66,76 60,73 56,68 C52,63 52,55 54,48 C56,40 62,35 67,29 C71,25 68,23 59,21 Z"
+            fill="#F0D48A" stroke="#5C3D1F" stroke-width="3"/>
+        </svg>
+        <div class="cap">Seed</div>
+      </div>
+
+      <div class="seq-card" data-stage="seedling">
+        <span class="seq-badge"></span>
+        <svg viewBox="0 0 100 110">
+          <rect x="0" y="78" width="100" height="32" fill="#C89968"/>
+          <path d="M50,80 C48,60 50,40 52,24" stroke="#3E9E56" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M50,58 C34,52 24,40 22,26 C40,28 50,42 52,56 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2.5"/>
+          <path d="M50,66 C64,60 73,50 75,38 C60,40 51,52 49,64 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2.5"/>
+          <ellipse cx="38" cy="78" rx="12" ry="7" fill="#C9A25C" stroke="#5C3D1F" stroke-width="2" transform="rotate(-20 38 78)"/>
+        </svg>
+        <div class="cap">Seedling</div>
+      </div>
+    </div>
+
+    <div class="seq-feedback" id="seqFeedback">Tap the first stage to begin.</div>
+    <button class="seq-reset" id="seqReset">🔁 Start over</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="quiz-card" id="quizCard">
+    <h2>📝 Sprout's Big Recap Quiz</h2>
+    <p class="instr">Answer all 5 questions to see how much you remember.</p>
+    <div id="quizQuestions"></div>
+    <div class="score-box" id="scoreBox"></div>
+  </div>
+
+  <div class="finale" id="finale">
+    <svg viewBox="0 0 100 110">
+      <rect x="0" y="90" width="100" height="20" fill="#C89968"/>
+      <path d="M50,90 C48,65 50,40 50,18" stroke="#3E9E56" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M50,55 C36,52 27,42 25,30 C40,32 49,44 51,54 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2.5"/>
+      <path d="M50,64 C64,61 73,51 75,39 C60,41 51,53 49,63 Z" fill="#5FC57A" stroke="#3E9E56" stroke-width="2.5"/>
+      <circle cx="50" cy="16" r="9" fill="#FFC947" stroke="#F4A620" stroke-width="2"/>
+      <circle cx="47" cy="14" r="1.4" fill="#3B2612"/>
+      <circle cx="53" cy="14" r="1.4" fill="#3B2612"/>
+      <path d="M47,18 Q50,20.5 53,18" stroke="#3B2612" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    </svg>
+    <h3>🌟 Chapter Complete!</h3>
+    <p>You've followed Sprout's whole journey from seed to flower. Great work!</p>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="00_hub.html"><span class="dot">🏠</span>Home</a>
+  <a href="01_seed_structure.html"><span class="dot">🌰</span>Seed</a>
+  <a href="02_germination.html"><span class="dot">💧</span>Germinate</a>
+  <a href="03_seedling.html"><span class="dot">🌱</span>Seedling</a>
+  <a class="active" href="04_adult_recap.html"><span class="dot">🌻</span>Adult</a>
+</nav>
+
+<script>
+// ---------- sequence game ----------
+(function(){
+  const correctOrder = ['seed','seedling','adult'];
+  const cards = document.querySelectorAll('.seq-card');
+  const feedback = document.getElementById('seqFeedback');
+  const resetBtn = document.getElementById('seqReset');
+  const quizCard = document.getElementById('quizCard');
+  let picks = [];
+
+  function updateBadges(){
+    cards.forEach(c => {
+      const i = picks.indexOf(c.dataset.stage);
+      const badge = c.querySelector('.seq-badge');
+      if(i > -1){
+        c.classList.add('picked');
+        badge.textContent = i + 1;
+      } else {
+        c.classList.remove('picked');
+        badge.textContent = '';
+      }
+    });
+  }
+
+  function reset(){
+    picks = [];
+    updateBadges();
+    feedback.textContent = 'Tap the first stage to begin.';
+  }
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const stage = card.dataset.stage;
+      if(picks.includes(stage)) return;
+
+      const expected = correctOrder[picks.length];
+      if(stage !== expected){
+        feedback.textContent = "🤔 Not quite that one yet — think about what Sprout looked like at each point.";
+        return;
+      }
+
+      picks.push(stage);
+      updateBadges();
+
+      if(picks.length < 3){
+        feedback.textContent = "✅ Good! Now tap what comes next.";
+      } else {
+        feedback.textContent = "🌟 Perfect! Seed → Seedling → Adult Plant — that's the life cycle!";
+        setTimeout(() => {
+          quizCard.classList.add('show');
+          buildQuiz();
+          quizCard.scrollIntoView({behavior:'smooth', block:'start'});
+        }, 900);
+      }
+    });
+  });
+
+  resetBtn.addEventListener('click', reset);
+  reset();
+})();
+
+// ---------- recap quiz ----------
+function buildQuiz(){
+  const questions = [
+    {
+      q: "What is the job of the seed coat?",
+      opts: ["It makes food for the plant", "It protects the seed from damage and drying out", "It absorbs water from the soil", "It turns into the first flower"],
+      correct: 1
+    },
+    {
+      q: "What does the seed leaf do before the plant has true leaves?",
+      opts: ["It stores and provides food for the young plant", "It makes food using sunlight", "It protects the roots", "It attracts insects"],
+      correct: 0
+    },
+    {
+      q: "What three things does a seed need to germinate?",
+      opts: ["Soil, fertiliser and light", "Water, warmth and air", "Ice, light and soil", "Fertiliser, wind and shade"],
+      correct: 1
+    },
+    {
+      q: "What appears first when a seed germinates?",
+      opts: ["The flower", "The true leaves", "The root", "The seed coat"],
+      correct: 2
+    },
+    {
+      q: "Why does the seed leaf eventually fall off?",
+      opts: ["It gets eaten by insects", "The true leaves can now make their own food, so it isn't needed", "It turns into a root", "The plant no longer needs water"],
+      correct: 1
+    }
+  ];
+
+  const container = document.getElementById('quizQuestions');
+  container.innerHTML = '';
+  let answered = 0;
+  let score = 0;
+
+  questions.forEach((item, qi) => {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'q';
+    const qText = document.createElement('div');
+    qText.className = 'qtext';
+    qText.textContent = (qi+1) + '. ' + item.q;
+    qDiv.appendChild(qText);
+    const optsDiv = document.createElement('div');
+    optsDiv.className = 'opts';
+    item.opts.forEach((optText, oi) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.textContent = optText;
+      btn.addEventListener('click', () => {
+        if(btn.disabled) return;
+        const allOpts = optsDiv.querySelectorAll('.opt');
+        allOpts.forEach(o => o.disabled = true);
+        if(oi === item.correct){
+          btn.classList.add('correct');
+          score++;
+        } else {
+          btn.classList.add('wrong');
+          allOpts[item.correct].classList.add('correct');
+        }
+        answered++;
+        if(answered === questions.length){ showScore(score, questions.length); }
+      });
+      optsDiv.appendChild(btn);
+    });
+    qDiv.appendChild(optsDiv);
+    container.appendChild(qDiv);
+  });
+}
+
+function showScore(score, total){
+  const box = document.getElementById('scoreBox');
+  let msg = '';
+  if(score === total) msg = "🌟 Perfect score! You really know Sprout's journey.";
+  else if(score >= total/2) msg = "👍 Nice work! You've got the main ideas down.";
+  else msg = "💧 Good try! Scroll back through the chapters to review, then come back anytime.";
+  box.textContent = `You scored ${score} / ${total} — ${msg}`;
+  box.classList.add('show');
+  document.getElementById('finale').classList.add('show');
+  document.getElementById('finale').scrollIntoView({behavior:'smooth', block:'center'});
+}
+</script>
+
+</body>
+</html>
